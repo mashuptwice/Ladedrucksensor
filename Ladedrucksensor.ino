@@ -35,6 +35,9 @@
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
+float druckBar = 1.00;
+
+
 // 'turboSymbol', 128x64px
 const unsigned char turboBitmap [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -118,22 +121,32 @@ void setup() {
   display.clearDisplay();
     display.drawBitmap(0, 0, turboBitmap, 128, 64, WHITE); // display.drawBitmap(x position, y position, bitmap data, bitmap width, bitmap height, color)
     display.display();
-    delay(5000);
+    delay(1000);
   display.clearDisplay();
 }
 
 void loop() {
+  
+  druckBar = ( analogRead(A0) * 0.00322265625);
+  Serial.println(druckBar);
+  Serial.println(analogRead(A0));
+  
+  display.clearDisplay();
   display.setTextSize(2);             // Normal 1:1 pixel scale
   display.setTextColor(SSD1306_WHITE);        // Draw white text
   display.setCursor(0,0);             // Start at top-left corner
   display.println(F(" Ladedruck"));
-  display.display();
 
   display.setTextSize(3);
+  display.setCursor(30,16);
+  display.println(druckBar);
 
-  display.setCursor(30,30);
-  display.println("1,05");
 
+  display.setTextSize(1);
+  display.setCursor(50,40);
+  display.println("kg/cm2");
   display.display();
+  delay(20);
+
 
 }
